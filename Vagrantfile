@@ -13,6 +13,7 @@ Vagrant.configure("2") do |config|
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.
   config.vm.box = "archlinux/archlinux"
+  config.ssh.forward_agent = true
   
   config.vm.define "archlinux" do |node|
     node.vm.hostname = "dtg"
@@ -73,5 +74,11 @@ Vagrant.configure("2") do |config|
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
     pacman -Syu ansible --noconfirm
+    mkdir -p ~/.ssh
+    chmod 700 ~/.ssh
+    ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+    ssh -T git@github.com
   SHELL
+  
+  config.vm.provision "file", source: "~/.ssh/id_rsa_dtgoitia", destination: "~/.ssh/id_rsa_dtgoitia"
 end

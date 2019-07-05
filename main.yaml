@@ -1,26 +1,28 @@
 ---
 - hosts: all
   become: true
-  # user:
-  #   name: aur_builder
-  #   group: wheel
-  # lineinfile:
-  #   path: /etc/sudoers.d/11-install-aur_builder
-  #   line: 'aur_builder ALL=(ALL) NOPASSWD: /usr/bin/pacman'
-  #   create: yes
-  #   validate: 'visudo -cf %s'
   tasks:
-  # - name: Install Ansible AUR helper
-  #   git:
-  #     repo: git clone https://github.com/kewlfft/ansible-aur.git
-  #     version: master
-  #     dest: ~/.ansible/plugins/modules/aur
-  #     # ssh-agent doesn't allow key to pass through remote sudo commands.
-  #   become: no
+  - name: Add non_root user
+    user:
+      name: non_root
+      group: wheel
+    # lineinfile:
+    #   path: /etc/sudoers.d/11-install-aur_builder
+    #   line: 'aur_builder ALL=(ALL) NOPASSWD: /usr/bin/pacman'
+    #   create: yes
+    #   validate: 'visudo -cf %s'
+  - name: Install Ansible AUR helper
+    git:
+      repo: git clone git@github.com:kewlfft/ansible-aur.git
+      version: master
+      dest: ~/.ansible/plugins/modules/aur
+      # ssh-agent doesn't allow key to pass through remote sudo commands.
+    become: no
+    become_user: non_root
   # - name: Install trizen using makepkg, skip if trizen is already installed
   #   aur: name=aurman use=makepkg skip_installed=true
   #   become: yes
-  #   become_user: aur_builder
+  #   become_user: non_root
   - name: Install gnome
     pacman:
       name: gnome

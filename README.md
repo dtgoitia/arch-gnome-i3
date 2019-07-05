@@ -13,3 +13,9 @@ Provision only the Ansible part:
 ```bash
 vagrant provision --provision-with ansible_local
 ```
+
+`~/.ssh/config`:
+```
+Host *
+  ForwardAgent yes
+```
